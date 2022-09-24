@@ -6,6 +6,7 @@ import Movies from "./components/Movies";
 import MovieListHeading from "./components/MovieListHeading";
 import Search from "./components/Search";
 import Favourites from "./components/Favourites";
+import RemoveFavourites from "./components/RemoveFavourites";
 
 // used to initialize the movies variable, to get the ui working
 const setOfMovies = [{
@@ -40,7 +41,7 @@ const setOfMovies = [{
 function App() {
   const [movies, setMovies] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-  const [favourites, setFavourites] = useState(''); // list of favourite movies
+  const [favourites, setFavourites] = useState([]); // list of favourite movies
 
   // make the request to the API 
   const getMovieRequest = async (searchValue) => {
@@ -59,9 +60,26 @@ function App() {
     getMovieRequest(searchValue);
   }, [searchValue]); // the getMovieRequest function is going to be called only when the page loads
 
+  useEffect(() => {
+    const movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app'));
+    setFavourites(movieFavourites);
+  }, []);
+
+  // after refresh the movies are not saved, this function deals with this problem
+  const saveToLocalStorage = (items) => {
+    localStorage.setItem('react-movie-rating-app', JSON.stringify(items));
+  };
+
   const addFavouriteMovie = (movie) => {
     const newFavourites = [...favourites, movie];
     setFavourites(newFavourites);
+    saveToLocalStorage(newFavourites);
+  };
+
+  const removeFromFavourites = (movie) => {
+    const newFavourites = favourites.filter((favourite) => favourite.imdbID !== movie.imdbID);
+    setFavourites(newFavourites);
+    saveToLocalStorage(newFavourites);
   };
 
   return (
@@ -72,14 +90,14 @@ function App() {
       </div>
       <div className='row'>
         {/* the movie list */}
-        <Movies movies={movies} favourites={Favourites} handleFavouritesClick={addFavouriteMovie} />
+        <Movies movies={movies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
       </div>
       <div className='row d-flex align-items-center mt-4 mb-4'>
         <MovieListHeading heading='Favourites' />
       </div>
       <div className='row'>
         {/* the favourites list */}
-        <Movies movies={favourites} favourites={Favourites} handleFavouritesClick={addFavouriteMovie} />
+        <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
       </div>
     </div>
   );

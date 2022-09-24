@@ -2,7 +2,7 @@ import React from "react";
 import Favourites from "./Favourites";
 
 const Movies = (props) => {
-    const Favourites = props.favourites; // the "Add to favourites" bar on the bottom of the movie poster
+    const Favourites = props.favouritesComponent; // the "Add to favourites" bar on the bottom of the movie poster
 
     return (
         <>
