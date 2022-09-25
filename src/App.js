@@ -42,6 +42,7 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [favourites, setFavourites] = useState([]); // list of favourite movies
+  const [listOfMovies, setListOfMovies] = useState([]);
 
   // make the request to the API 
   const getMovieRequest = async (searchValue) => {
@@ -50,8 +51,28 @@ function App() {
     const res = await fetch(url);
     const resJson = await res.json(); // convert the http response into json
     console.log(resJson);
-    if (resJson.Search) {
-      setMovies(resJson.Search);
+
+    // the dummy way
+    var finalListOfMovies = [];
+    for (var i = 0; i < resJson.Search.length; i++) {
+      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=387772cd`);
+      var resMovieJson = await resMovie.json();
+      finalListOfMovies.push(resMovieJson);
+    }
+    // var finalListOfMovies = [];
+    // resJson.Search.map(async (movie) => {
+    //   var resMovie = await fetch(`http://www.omdbapi.com/?t=${movie.Title}&apikey=387772cd`);
+    //   var resMovieJson = await resMovie.json();
+    //   finalListOfMovies.push(resMovieJson);
+    // });
+
+    console.log(finalListOfMovies);
+
+    if (resJson.Search && finalListOfMovies) {
+      // setMovies(resJson.Search);
+      // setListOfMovies(finalListOfMovies);
+      setMovies(finalListOfMovies);
+      // console.log(movies); --> unknown behaviour ->  this is behind one step, if I search refresh, search "pasta" -> movies: [], and then if I search "potato" -> movies: [pasta movies]
     }
   };
 
@@ -89,16 +110,16 @@ function App() {
         <Search searchValue={searchValue} setSearchValue={setSearchValue} />
       </div>
       <div className='row'>
-        {/* the movie list */}
         <Movies movies={movies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
       </div>
-      <div className='row d-flex align-items-center mt-4 mb-4'>
+
+
+      {/* <div className='row d-flex align-items-center mt-4 mb-4'>
         <MovieListHeading heading='Favourites' />
       </div>
       <div className='row'>
-        {/* the favourites list */}
         <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
-      </div>
+      </div> */}
     </div>
   );
 }
