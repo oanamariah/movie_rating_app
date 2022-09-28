@@ -7,6 +7,7 @@ import MovieListHeading from "./components/MovieListHeading";
 import Search from "./components/Search";
 import Favourites from "./components/Favourites";
 import RemoveFavourites from "./components/RemoveFavourites";
+import Popup from "react-popup";
 
 // used to initialize the movies variable, to get the ui working
 const setOfMovies = [{
@@ -103,6 +104,23 @@ function App() {
     saveToLocalStorage(newFavourites);
   };
 
+  const Tooltip = () => (
+    <Popup
+      trigger={open => (
+        <button className="button">Trigger - {open ? 'Opened' : 'Closed'}</button>
+      )}
+      position="right center"
+      closeOnDocumentClick
+    >
+      <span> Popup content </span>
+    </Popup>
+  );
+  const Modal = () => (
+    <Popup trigger={<button className="button"> Open Modal </button>} modal>
+      <span> Modal content </span>
+    </Popup>
+  );
+
   return (
     <div className='container-fluid movie-app'>
       <div className='row d-flex align-items-center mt-4 mb-4'>
@@ -120,6 +138,10 @@ function App() {
       <div className='row'>
         <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
       </div> */}
+
+
+
+
     </div>
   );
 }

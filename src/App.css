@@ -28,32 +28,24 @@ body {
     width: 100%;
     transition: 0.5s ease;
     opacity: 0;
-    top: 0;
-    font-size: 20px;
-    padding: 20px;
-    text-align: center;
-}
-
-.persistent {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    width: 100%;
-    transition: 0.5s ease;
-    opacity: 0;
-    top: 0;
-    font-size: 20px;
-    padding: 20px;
-    text-align: center;
-}
-
-/* .overlay {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    width: 100%;
-    transition: 0.5s ease;
-    opacity: 0;
     bottom: 0;
     font-size: 20px;
     padding: 20px;
     text-align: center;
-} */
+}
+
+.button {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    width: 30%;
+    height: 10%;
+    opacity: 1;
+    top: 0;
+    right: 0;
+    font-size: 30px;
+    text-align: center;
+}
+
+.ratingComponent {
+    color: white;
+}
