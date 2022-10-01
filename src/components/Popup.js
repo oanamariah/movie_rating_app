@@ -2,9 +2,23 @@ import React, { useState } from "react";
 import "./Popup.css";
 import { FaStar } from "react-icons/fa";
 
-const Popup = ({ setPopup }) => {
+const saveUserRating = (movie, rating) => {
+    movie["userRating"] = rating;
+    const ratings = JSON.parse(localStorage.getItem('react-movie-rating-app-ratings'));
+    if (ratings !== null) {
+        const newRatings = [...ratings, movie];
+        localStorage.setItem('react-movie-rating-app-ratings', JSON.stringify(newRatings));
+    } else {
+        const newRatings = [movie];
+        localStorage.setItem('react-movie-rating-app-ratings', JSON.stringify(newRatings));
+    }
+
+}
+
+const Popup = (props) => {
     const [rating, setRating] = useState(null);
     const [hover, setHover] = useState(null);
+
     return (
         <div className="modalBackground">
             <div className="modalContainer">
@@ -14,7 +28,7 @@ const Popup = ({ setPopup }) => {
                         const ratingVal = index + 1;
                         return (
                             <>
-                                <label>
+                                <label className="ratingContainer">
                                     <input
                                         type="radio"
                                         name="rating"
@@ -38,7 +52,7 @@ const Popup = ({ setPopup }) => {
 
 
 
-                    <button onClick={() => { setPopup(false); }}> X </button>
+                    <button onClick={() => { props.setPopup(false); saveUserRating(props.movie, rating) }}> X </button>
                 </div>
             </div>
         </div>

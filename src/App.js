@@ -53,7 +53,6 @@ function App() {
     const resJson = await res.json(); // convert the http response into json
     console.log(resJson);
 
-    // the dummy way
     var finalListOfMovies = [];
     for (var i = 0; i < resJson.Search.length; i++) {
       var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=387772cd`);
@@ -89,7 +88,7 @@ function App() {
 
   // after refresh the movies are not saved, this function deals with this problem
   const saveToLocalStorage = (items) => {
-    localStorage.setItem('react-movie-rating-app', JSON.stringify(items));
+    localStorage.setItem('react-movie-rating-app-favourites', JSON.stringify(items));
   };
 
   const addFavouriteMovie = (movie) => {
@@ -103,23 +102,6 @@ function App() {
     setFavourites(newFavourites);
     saveToLocalStorage(newFavourites);
   };
-
-  const Tooltip = () => (
-    <Popup
-      trigger={open => (
-        <button className="button">Trigger - {open ? 'Opened' : 'Closed'}</button>
-      )}
-      position="right center"
-      closeOnDocumentClick
-    >
-      <span> Popup content </span>
-    </Popup>
-  );
-  const Modal = () => (
-    <Popup trigger={<button className="button"> Open Modal </button>} modal>
-      <span> Modal content </span>
-    </Popup>
-  );
 
   return (
     <div className='container-fluid movie-app'>

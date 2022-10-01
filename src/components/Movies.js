@@ -11,7 +11,7 @@ const Movies = (props) => {
             {props.movies.map((movie, index) => (
                 <div className="image-container d-flex justify-content-start m-3" key={index}>
 
-                    <Rating rating={movie.imdbRating} />
+                    <Rating rating={movie.imdbRating} movie={movie} />
 
                     <img src={movie.Poster} alt='movie'></img>
 
