@@ -4,6 +4,7 @@ body {
 }
 
 .movie-app>.row {
+    overflow-y: hidden;
     overflow-x: auto;
     flex-wrap: nowrap;
 }
@@ -20,7 +21,7 @@ body {
 
 .image-container:hover .overlay {
     opacity: 1;
-
+    overflow: hidden;
 }
 
 .overlay {
@@ -70,4 +71,10 @@ body {
     left: 0;
     font-size: 10px;
     text-align: center;
+}
+
+.btn {
+    background-color: #fff;
+    border-color: #141414;
+
 }

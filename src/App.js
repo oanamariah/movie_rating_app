@@ -7,84 +7,96 @@ import MovieListHeading from "./components/MovieListHeading";
 import Search from "./components/Search";
 import Favourites from "./components/Favourites";
 import RemoveFavourites from "./components/RemoveFavourites";
-import Popup from "react-popup";
+import { seriesArray, moviesArray } from "./components/Constants";
 
-// used to initialize the movies variable, to get the ui working
-const setOfMovies = [{
-  "Title": "Batman Begins",
-  "Year": "2005",
-  "imdbID": "tt0372784",
-  "Type": "movie",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BOTY4YjI2N2MtYmFlMC00ZjcyLTg3YjEtMDQyM2ZjYzQ5YWFkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg"
-},
-{
-  "Title": "The Batman",
-  "Year": "2022",
-  "imdbID": "tt1877830",
-  "Type": "movie",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BMDdmMTBiNTYtMDIzNi00NGVlLWIzMDYtZTk3MTQ3NGQxZGEwXkEyXkFqcGdeQXVyMzMwOTU5MDk@._V1_SX300.jpg"
-},
-{
-  "Title": "Batman",
-  "Year": "1989",
-  "imdbID": "tt0096895",
-  "Type": "movie",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BZDNjOGNhN2UtNmNhMC00YjU4LWEzMmUtNzRkM2RjN2RiMjc5XkEyXkFqcGdeQXVyMTU0OTM5ODc1._V1_SX300.jpg"
-},
-{
-  "Title": "Batman: The Animated Series",
-  "Year": "1992–1995",
-  "imdbID": "tt0103359",
-  "Type": "series",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BOTM3MTRkZjQtYjBkMy00YWE1LTkxOTQtNDQyNGY0YjYzNzAzXkEyXkFqcGdeQXVyOTgwMzk1MTA@._V1_SX300.jpg"
-}];
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [year, setYear] = useState(null);
+  const [type, setType] = useState('movie');
   const [favourites, setFavourites] = useState([]); // list of favourite movies
-  const [listOfMovies, setListOfMovies] = useState([]);
+  const [randomSeries, setRandomSeries] = useState([]);
+  const [randomMovies, setRandomMovies] = useState([]);
+  const [searchFound, setSearchFound] = useState(false);
+  const API_KEY = "387772cd";
+
+  // generate a random word to search
+  const randomSearchValueGenerator = (type) => {
+    if (type === "series") {
+      const position = Math.floor(Math.random() * seriesArray.length);
+      return seriesArray[position];
+
+    } else if (type === "movies") {
+      const position = Math.floor(Math.random() * moviesArray.length);
+      return moviesArray[position];
+    }
+  };
 
   // make the request to the API 
   const getMovieRequest = async (searchValue) => {
 
-    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=387772cd`;
+    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=${API_KEY}`;
     const res = await fetch(url);
     const resJson = await res.json(); // convert the http response into json
-    console.log(resJson);
 
     var finalListOfMovies = [];
     for (var i = 0; i < resJson.Search.length; i++) {
-      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=387772cd`);
+      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
       var resMovieJson = await resMovie.json();
       finalListOfMovies.push(resMovieJson);
     }
-    // var finalListOfMovies = [];
-    // resJson.Search.map(async (movie) => {
-    //   var resMovie = await fetch(`http://www.omdbapi.com/?t=${movie.Title}&apikey=387772cd`);
-    //   var resMovieJson = await resMovie.json();
-    //   finalListOfMovies.push(resMovieJson);
-    // });
-
-    console.log(finalListOfMovies);
 
     if (resJson.Search && finalListOfMovies) {
-      // setMovies(resJson.Search);
-      // setListOfMovies(finalListOfMovies);
       setMovies(finalListOfMovies);
+      setSearchFound(true);
       // console.log(movies); --> unknown behaviour ->  this is behind one step, if I search refresh, search "pasta" -> movies: [], and then if I search "potato" -> movies: [pasta movies]
     }
   };
 
 
+
+
+  // make the request to the API 
+  const getDataFromAPI = async (searchValue, type, year, setFunction) => {
+
+    const url = `http://www.omdbapi.com/?type=${type}&y=${year}&s=${searchValue}&apikey=${API_KEY}`;
+    const res = await fetch(url);
+    const resJson = await res.json(); // convert the http response into json
+
+    var finalListOfMovies = [];
+    for (var i = 0; i < resJson.Search.length; i++) {
+      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
+      var resMovieJson = await resMovie.json();
+      finalListOfMovies.push(resMovieJson);
+    }
+    console.log(finalListOfMovies);
+    if (resJson.Search && finalListOfMovies) {
+      setFunction(finalListOfMovies);
+    }
+  };
+
+
   useEffect(() => {
-    getMovieRequest(searchValue);
+    getDataFromAPI(searchValue, type, year, setMovies);
   }, [searchValue]); // the getMovieRequest function is going to be called only when the page loads
 
   useEffect(() => {
     const movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app-favourites'));
     setFavourites(movieFavourites);
   }, []);
+
+  useEffect(() => {
+    const randomMoviesSearch = randomSearchValueGenerator("movies");
+    getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
+  }, []); // loads the random movies row
+
+  useEffect(() => {
+    const randomSeriesSearch = randomSearchValueGenerator("series");
+    getDataFromAPI(randomSeriesSearch, "series", null, setRandomSeries);
+  }, []); // loads the random series row
+
+
 
   // after refresh the movies are not saved, this function deals with this problem
   const saveToLocalStorage = (items) => {
@@ -110,25 +122,45 @@ function App() {
 
   return (
     <div className='container-fluid movie-app'>
+
+      {/* search bar */}
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
+      <div className='row'>
+        <MovieListHeading heading='' />
+        <Search className="d-flex align-items-center mt-4 mb-4" searchValue={searchValue} setSearchValue={setSearchValue} year={year} setYear={setYear} type={type} setType={setType} />
+      </div>
+
+      {/* search results */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
-        <MovieListHeading heading='Movies' />
-        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+        {searchFound && <MovieListHeading heading='Search results' />}
       </div>
       <div className='row'>
         <Movies movies={movies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
       </div>
 
+      {/* random movies row */}
+      <div className='row d-flex align-items-center mt-4 mb-4'>
+        <MovieListHeading heading='Movies' />
+      </div>
+      <div className='row'>
+        <Movies movies={randomMovies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
+      </div>
 
+      {/* random series row */}
+      <div className='row d-flex align-items-center mt-4 mb-4'>
+        <MovieListHeading heading='Series' />
+      </div>
+      <div className='row'>
+        <Movies movies={randomSeries} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
+      </div>
+
+      {/* favourites row */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
         <MovieListHeading heading='Favourites' />
       </div>
       <div className='row'>
         <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
       </div>
-
-
-
-
     </div>
   );
 }
