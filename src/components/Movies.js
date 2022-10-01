@@ -15,10 +15,19 @@ const Movies = (props) => {
 
                     <img src={movie.Poster} alt='movie'></img>
 
+                    <button className="favouritesComponent d-flex align-items-center justify-content-center" onClick={() => props.handleFavouritesClick(movie)}> <Favourites /> </button>
 
                     {/* <div className="overlay d-flex align-items-center justify-content-center" onClick={() => props.handleFavouritesClick(movie)}>
                         <Favourites />
                     </div> */}
+
+                    <div className="overlay">
+                        <hr></hr>
+                        <h5>Plot:</h5>
+                        <p>
+                            {movie.Plot}
+                        </p>
+                    </div>
 
                 </div>
             ))}

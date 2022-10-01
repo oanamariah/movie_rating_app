@@ -82,7 +82,7 @@ function App() {
   }, [searchValue]); // the getMovieRequest function is going to be called only when the page loads
 
   useEffect(() => {
-    const movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app'));
+    const movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app-favourites'));
     setFavourites(movieFavourites);
   }, []);
 
@@ -92,7 +92,12 @@ function App() {
   };
 
   const addFavouriteMovie = (movie) => {
-    const newFavourites = [...favourites, movie];
+    var newFavourites;
+    if (favourites !== null) {
+      newFavourites = [movie, ...favourites];
+    } else {
+      newFavourites = [movie];
+    }
     setFavourites(newFavourites);
     saveToLocalStorage(newFavourites);
   };
@@ -114,12 +119,12 @@ function App() {
       </div>
 
 
-      {/* <div className='row d-flex align-items-center mt-4 mb-4'>
+      <div className='row d-flex align-items-center mt-4 mb-4'>
         <MovieListHeading heading='Favourites' />
       </div>
       <div className='row'>
         <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
-      </div> */}
+      </div>
 
 
 
