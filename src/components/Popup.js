@@ -28,7 +28,7 @@ const Popup = (props) => {
                         const ratingVal = index + 1;
                         return (
                             <>
-                                <label className="ratingContainer">
+                                <label className="ratingContainer" key={index}>
                                     <input
                                         type="radio"
                                         name="rating"
@@ -49,9 +49,6 @@ const Popup = (props) => {
                         )
 
                     })}
-
-
-
                     <button onClick={() => { props.setPopup(false); saveUserRating(props.movie, rating) }}> X </button>
                 </div>
             </div>

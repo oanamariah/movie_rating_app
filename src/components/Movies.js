@@ -1,5 +1,4 @@
 import React from "react";
-import Favourites from "./Favourites";
 import Rating from "./Rating";
 
 
@@ -33,24 +32,6 @@ const Movies = (props) => {
             ))}
         </>
     );
-
-    /* For the first version of return, if the key={index} was missing there would be an error
-    like this: react_devtools_backend.js:4026 Warning: Each child in a list should have a unique "key" prop.
-    A more elegant way to do this would be to use React.Children.toArray because when rendering the list
-    through the React.Children.toArray method, React will return the children opaque data structure as a
-    flat array with keys assigned to each child.
-    */
-    /*
-    return (
-        <>
-            {React.Children.toArray(props.map((movie, index) => {
-                <div className="d-flex justify-content-start m-3"> 
-                    <img src={movie.Poster} alt='movie'></img>
-                </div>
-            }))}
-        </>
-    );
-    */
 };
 
 export default Movies;

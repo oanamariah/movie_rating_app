@@ -1,5 +1,8 @@
 body {
-    background: #141414;
+    background-color: #000012;
+    background-image: url("chalkboard.jpg");
+    background-attachment: fixed;
+    background-size: contain;
     color: #fff;
 }
 
@@ -7,6 +10,7 @@ body {
     overflow-y: hidden;
     overflow-x: auto;
     flex-wrap: nowrap;
+    scroll-snap-align: initial;
 }
 
 .image-container {
@@ -75,6 +79,20 @@ body {
 
 .btn {
     background-color: #fff;
-    border-color: #141414;
+    font-size: 16px;
+    width: 15%;
+    border-radius: 5px;
+}
 
+.year {
+    width: 20%;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: #141414;
+}
+
+.search {
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
 }

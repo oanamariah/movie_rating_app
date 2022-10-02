@@ -18,7 +18,8 @@ function App() {
   const [favourites, setFavourites] = useState([]); // list of favourite movies
   const [randomSeries, setRandomSeries] = useState([]);
   const [randomMovies, setRandomMovies] = useState([]);
-  const [searchFound, setSearchFound] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [secondSearch, setSecondSearch] = useState(searchValue);
   const API_KEY = "387772cd";
 
   // generate a random word to search
@@ -26,7 +27,6 @@ function App() {
     if (type === "series") {
       const position = Math.floor(Math.random() * seriesArray.length);
       return seriesArray[position];
-
     } else if (type === "movies") {
       const position = Math.floor(Math.random() * moviesArray.length);
       return moviesArray[position];
@@ -34,45 +34,30 @@ function App() {
   };
 
   // make the request to the API 
-  const getMovieRequest = async (searchValue) => {
-
-    const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=${API_KEY}`;
-    const res = await fetch(url);
-    const resJson = await res.json(); // convert the http response into json
-
-    var finalListOfMovies = [];
-    for (var i = 0; i < resJson.Search.length; i++) {
-      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
-      var resMovieJson = await resMovie.json();
-      finalListOfMovies.push(resMovieJson);
-    }
-
-    if (resJson.Search && finalListOfMovies) {
-      setMovies(finalListOfMovies);
-      setSearchFound(true);
-      // console.log(movies); --> unknown behaviour ->  this is behind one step, if I search refresh, search "pasta" -> movies: [], and then if I search "potato" -> movies: [pasta movies]
-    }
-  };
-
-
-
-
-  // make the request to the API 
   const getDataFromAPI = async (searchValue, type, year, setFunction) => {
 
     const url = `http://www.omdbapi.com/?type=${type}&y=${year}&s=${searchValue}&apikey=${API_KEY}`;
     const res = await fetch(url);
     const resJson = await res.json(); // convert the http response into json
-
-    var finalListOfMovies = [];
-    for (var i = 0; i < resJson.Search.length; i++) {
-      var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
-      var resMovieJson = await resMovie.json();
-      finalListOfMovies.push(resMovieJson);
+    if (resJson.Error === "Too many results." && secondSearch !== searchValue) {
+      setErrorMessage(resJson.Error);
+      setSecondSearch(searchValue);
+    } else if (resJson.Error === "Movie not found!" && secondSearch !== searchValue) {
+      setErrorMessage(resJson.Error);
+      setSecondSearch(searchValue);
     }
-    console.log(finalListOfMovies);
-    if (resJson.Search && finalListOfMovies) {
-      setFunction(finalListOfMovies);
+    else {
+      var finalListOfMovies = [];
+      for (var i = 0; i < resJson.Search.length; i++) {
+        var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
+        var resMovieJson = await resMovie.json();
+        if (resMovieJson.Poster !== "N/A") {
+          finalListOfMovies.push(resMovieJson);
+        }
+      }
+      if (resJson.Search && finalListOfMovies) {
+        setFunction(finalListOfMovies);
+      }
     }
   };
 
@@ -129,14 +114,16 @@ function App() {
         <MovieListHeading heading='' />
         <Search className="d-flex align-items-center mt-4 mb-4" searchValue={searchValue} setSearchValue={setSearchValue} year={year} setYear={setYear} type={type} setType={setType} />
       </div>
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
 
       {/* search results */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
-        {searchFound && <MovieListHeading heading='Search results' />}
+        {(errorMessage !== '') && (secondSearch === searchValue) && <MovieListHeading heading={`${errorMessage}`} />}
       </div>
       <div className='row'>
-        <Movies movies={movies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
+        {(secondSearch !== searchValue) && <Movies movies={movies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />}
       </div>
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
 
       {/* random movies row */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
@@ -145,6 +132,7 @@ function App() {
       <div className='row'>
         <Movies movies={randomMovies} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
       </div>
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
 
       {/* random series row */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
@@ -153,6 +141,7 @@ function App() {
       <div className='row'>
         <Movies movies={randomSeries} favouritesComponent={Favourites} handleFavouritesClick={addFavouriteMovie} />
       </div>
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
 
       {/* favourites row */}
       <div className='row d-flex align-items-center mt-4 mb-4'>
@@ -161,6 +150,7 @@ function App() {
       <div className='row'>
         <Movies movies={favourites} favouritesComponent={RemoveFavourites} handleFavouritesClick={removeFromFavourites} />
       </div>
+      <div className='row d-flex align-items-center mt-4 mb-4'></div>
     </div>
   );
 }
