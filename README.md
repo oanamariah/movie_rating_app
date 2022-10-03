@@ -43,13 +43,7 @@ when a movie is not found when the title of the searched movie/series is
 too short  and the response from the request would retrieve too many 
 movies. Also, when the poster of the movie doesn't exist, I chose not to 
 display that movie because I  wouldn't help the user and visually would be 
-unpleasant.
-
-I started working on this project following this tutorial 
-(https://www.youtube.com/watch?v=jc9_Bqzy2YQ) and I continued with this 
-tutorial  (https://www.youtube.com/watch?v=eDw46GYAIDQ) for the rating 
-part and also (https://www.youtube.com/watch?v=ZCvemsUfwPQ) for creating 
-the rating popup. And  the rest is (in my web) history :) .  
+unpleasant. 
 
 For the style of the page I mainly used bootstrap classes and icons. 
 
