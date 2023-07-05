@@ -36,7 +36,7 @@ function App() {
   // make the request to the API 
   const getDataFromAPI = async (searchValue, type, year, setFunction) => {
 
-    const url = `http://www.omdbapi.com/?type=${type}&y=${year}&s=${searchValue}&apikey=${API_KEY}`;
+    const url = `https://www.omdbapi.com/?type=${type}&y=${year}&s=${searchValue}&apikey=${API_KEY}`;
     const res = await fetch(url);
     const resJson = await res.json(); // convert the http response into json
     if (resJson.Error === "Too many results." && secondSearch !== searchValue) {
