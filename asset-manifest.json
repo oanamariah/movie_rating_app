@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/movie_rating_app/static/css/main.8a17fb44.css",
-    "main.js": "/movie_rating_app/static/js/main.78ff5b14.js",
+    "main.js": "/movie_rating_app/static/js/main.3d932ae8.js",
     "static/media/chalkboard.jpg": "/movie_rating_app/static/media/chalkboard.ece11d104b7a0c48ba21.jpg",
     "index.html": "/movie_rating_app/index.html",
     "main.8a17fb44.css.map": "/movie_rating_app/static/css/main.8a17fb44.css.map",
-    "main.78ff5b14.js.map": "/movie_rating_app/static/js/main.78ff5b14.js.map"
+    "main.3d932ae8.js.map": "/movie_rating_app/static/js/main.3d932ae8.js.map"
   },
   "entrypoints": [
     "static/css/main.8a17fb44.css",
-    "static/js/main.78ff5b14.js"
+    "static/js/main.3d932ae8.js"
   ]
 }
