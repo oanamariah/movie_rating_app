@@ -12,7 +12,7 @@ import { seriesArray, moviesArray } from "./components/Constants";
 
 function App() {
   const [movies, setMovies] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState('peach');
   const [year, setYear] = useState(null);
   const [type, setType] = useState('movie');
   const [favourites, setFavourites] = useState([]); // list of favourite movies
@@ -63,17 +63,35 @@ function App() {
 
 
   useEffect(() => {
-    getDataFromAPI(searchValue, type, year, setMovies);
+    async function fetchData() {
+      await getDataFromAPI(searchValue, type, year, setMovies);
+    }
+    fetchData();
   }, [searchValue]); // the getMovieRequest function is going to be called only when the page loads
 
   useEffect(() => {
-    const movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app-favourites'));
+    const localFavourites = localStorage.getItem('react-movie-rating-app-favourites');
+    let movieFavourites = null;
+    if (localFavourites !== undefined) {
+      movieFavourites = JSON.parse(localFavourites);
+    }
+    // let movieFavourites = JSON.parse(localStorage.getItem('react-movie-rating-app-favourites'));
+    if(movieFavourites == null) {
+      movieFavourites = [];
+    }
     setFavourites(movieFavourites);
   }, []);
 
   useEffect(() => {
     const randomMoviesSearch = randomSearchValueGenerator("movies");
-    getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
+    console.log("-------------------------------->randommovies");
+    console.log(randomMoviesSearch);
+    async function fetchData() {
+      await getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
+    }
+    fetchData();
+    // getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
+    console.log(randomMovies);
   }, []); // loads the random movies row
 
   useEffect(() => {
@@ -90,13 +108,17 @@ function App() {
 
   const addFavouriteMovie = (movie) => {
     var newFavourites;
-    if (favourites !== null) {
-      newFavourites = [movie, ...favourites];
-    } else {
-      newFavourites = [movie];
+    // search to see of the favourite is already added
+    const found = favourites.filter((favourite) => favourite.imdbID == movie.imdbID);
+    if (found.length == 0) {// movie isn't already a favourite
+      if (favourites !== null) { 
+        newFavourites = [movie, ...favourites];
+      } else {
+          newFavourites = [movie];
+      }
+      setFavourites(newFavourites);
+      saveToLocalStorage(newFavourites);
     }
-    setFavourites(newFavourites);
-    saveToLocalStorage(newFavourites);
   };
 
   const removeFromFavourites = (movie) => {
