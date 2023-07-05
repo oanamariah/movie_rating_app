@@ -49,7 +49,7 @@ function App() {
     else {
       var finalListOfMovies = [];
       for (var i = 0; i < resJson.Search.length; i++) {
-        var resMovie = await fetch(`http://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
+        var resMovie = await fetch(`https://www.omdbapi.com/?t=${resJson.Search[i].Title}&apikey=${API_KEY}`);
         var resMovieJson = await resMovie.json();
         if (resMovieJson.Poster !== "N/A") {
           finalListOfMovies.push(resMovieJson);
