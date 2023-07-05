@@ -84,14 +84,10 @@ function App() {
 
   useEffect(() => {
     const randomMoviesSearch = randomSearchValueGenerator("movies");
-    console.log("-------------------------------->randommovies");
-    console.log(randomMoviesSearch);
     async function fetchData() {
       await getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
     }
     fetchData();
-    // getDataFromAPI(randomMoviesSearch, "movie", null, setRandomMovies);
-    console.log(randomMovies);
   }, []); // loads the random movies row
 
   useEffect(() => {
